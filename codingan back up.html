@@ -1,0 +1,127 @@
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+         <meta charset="UTF-8">
+         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>213</title>
+         <link href="css/styles.css" rel="stylesheet" />
+     </head>
+     <body>
+         
+     </body>
+     </html>
+     <!-- Call to action section-->
+     <section class="py-5 bg-gradient-primary-to-secondary text-white">
+        <div class="container px-5 my-5">
+            <div class="text-center">
+                <h2 class="display-4 fw-bolder mb-4">Let's build something together</h2>
+                <a class="btn btn-outline-light btn-lg px-5 py-3 fs-6 fw-bolder" href="contact.html">Contact me</a>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- Experience Card 3-->
+<div class="card shadow border-0 rounded-4 mb-5">
+    <div class="card-body p-5">
+        <div class="row align-items-center gx-5">
+            <div class="col text-center text-lg-start mb-4 mb-lg-0">
+                <div class="bg-light p-4 rounded-4">
+                    <div class="text-primary fw-bolder mb-2">2017 - 2019</div>
+                    <div class="small fw-bolder">SEM Specialist</div>
+                    <div class="small text-muted">Wayne Enterprises</div>
+                    <div class="small text-muted">Gotham City, NY</div>
+                </div>
+            </div>
+            <div class="col-lg-8"><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus laudantium, voluptatem quis repellendus eaque sit animi illo ipsam amet officiis corporis sed aliquam non voluptate corrupti excepturi maxime porro fuga.</div></div>
+        </div>
+    </div>
+</div>
+     <!-- Education Card 1-->
+     <div class="card shadow border-0 rounded-4 mb-5">
+        <div class="card-body p-5">
+            <div class="row align-items-center gx-5">
+                <div class="col text-center text-lg-start mb-4 mb-lg-0">
+                    <div class="bg-light p-4 rounded-4">
+                        <div class="text-secondary fw-bolder mb-2">2015 - 2017</div>
+                        <div class="mb-2">
+                            <div class="small fw-bolder">Barnett College</div>
+                            <div class="small text-muted">Fairfield, NY</div>
+                        </div>
+                        <div class="fst-italic">
+                            <div class="small text-muted">Master's</div>
+                            <div class="small text-muted">Web Development</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8"><div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus laudantium, voluptatem quis repellendus eaque sit animi illo ipsam amet officiis corporis sed aliquam non voluptate corrupti excepturi maxime porro fuga.</div></div>
+            </div>
+        </div>
+    </div>
+    <title>this is the title</title></head>
+     <body> Please Comment<hr/><br/> <form> <table> <tr>
+          <td>Write a comment:</td > <td><textarea cols="30" rows="5"></textarea></td> </tr>
+           <tr> <td><input type="submit" value="Post a Comment"/> </td> <td><input type="reset" value="delete"></td> </tr> </table> 
+        </form> </body> </html><title>this is the title</title></head> <body> Please Comment<hr/><br/> 
+        <form> <table> <tr> <td>Write a comment:</td > <td><textarea cols="30" rows="5"></textarea></td> </tr> <tr> <td><input type="submit" value="Post a Comment"/> </td> <td><input type="reset" value="delete"></td> </tr> </table> </form> </body> </html>
+
+        <?php
+// Periksa apakah sesi sudah dimulai
+if (session_status() === PHP_SESSION_NONE) {
+    // Jika tidak, mulai sesi
+    session_start();
+}
+
+// Masukkan file koneksi database
+include "koneksi.php";
+
+// Periksa apakah session 'username' telah diatur dan memiliki nilai yang valid
+if(isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+    // Variabel 'username' memiliki nilai yang valid, Anda dapat menggunakannya
+    $username = $_SESSION['username'];
+    
+    // Ambil id_user berdasarkan username dari tabel tb_user
+    $user_query = "SELECT id_user FROM tb_user WHERE username = ?";
+    $user_stmt = mysqli_prepare($conn, $user_query);
+    mysqli_stmt_bind_param($user_stmt, "s", $username);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    
+    if($user_result && mysqli_num_rows($user_result) > 0) {
+        // Ambil id_user dari hasil query
+        $user_row = mysqli_fetch_assoc($user_result);
+        $id_user = $user_row['id_user'];
+        
+        // Periksa apakah tombol submit telah diklik
+        if(isset($_POST['submit'])) {
+            // Validasi opini yang dikirimkan
+            $opinion = trim($_POST['opini']); // Hapus spasi di awal dan akhir
+            if(empty($opinion)) {
+                echo "Opini tidak boleh kosong.";
+            } else {
+                // Lakukan operasi INSERT ke dalam tabel tb_opinion
+                // Pastikan nilai id_user yang dimasukkan sudah valid dan ada di tabel tb_user
+                $insert_query = "INSERT INTO tb_opinion (id_user, opini) VALUES (?, ?)";
+                $insert_stmt = mysqli_prepare($conn, $insert_query);
+                mysqli_stmt_bind_param($insert_stmt, "is", $id_user, $opinion);
+                if(mysqli_stmt_execute($insert_stmt)) {
+                    echo "Opini berhasil dikirim.";
+                    header("Location: ".$_SERVER['PHP_SELF']);
+                    exit();
+                } else {
+                    echo "Gagal menambahkan opini: " . mysqli_error($conn);
+                }
+            }
+        }
+    } else {
+        echo "Gagal mendapatkan id_user dari username: " . mysqli_error($conn);
+    }
+} else {
+    // Session 'username' tidak diatur atau kosong
+    // Lakukan tindakan yang sesuai, misalnya, kembalikan pengguna ke halaman login
+    echo "Anda belum masuk. Silakan masuk terlebih dahulu.";
+    // Anda bisa melakukan redirect ke halaman login:
+    // header("Location: login.php");
+    // exit();
+}
+?>
